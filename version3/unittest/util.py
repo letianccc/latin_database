@@ -6,11 +6,32 @@ from version3.source.type import IntType, StringType
 from version3.source.heappage import HeapPage, PageId
 from version3.source.insert import Insert
 from version3.source.database import Database
+from threading import Thread
 import os
+
+
+
 
 class TestUtil():
     @staticmethod
-    def file_init(cls):
+    def gen_page_id1():
+        table_name = '/home/latin/code/python/latin_database/version3/data/test1'
+        table_id = Catalog.name_to_id(table_name)
+        page_index = 0
+        page_id = PageId(table_id, page_index)
+        return page_id
+
+    @staticmethod
+    def gen_page_id2():
+        table_name = '/home/latin/code/python/latin_database/version3/data/test2'
+        table_id = Catalog.name_to_id(table_name)
+        page_index = 0
+        page_id = PageId(table_id, page_index)
+        return page_id
+
+
+    @staticmethod
+    def file_init():
         table_name1 = '/home/latin/code/python/latin_database/version3/data/test1'
         table_name2 = '/home/latin/code/python/latin_database/version3/data/test2'
         catalog_file = '/home/latin/code/python/latin_database/version3/data/catalog'
@@ -191,3 +212,12 @@ class TestLockUtil:
             if holders[0] == tran_id:
                 if lock.get_type() == lock_type:
                     self.acquire = True
+
+# class TestThread(Thread):
+#     def __init__(self, target, args):
+#         super(TestThread, self).__init__()
+#         self.target = target
+#         self.args = args
+#
+#     def run(self):
+#         self.target(self.args)

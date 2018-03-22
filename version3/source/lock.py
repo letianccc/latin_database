@@ -1,6 +1,8 @@
 import time
 
 
+
+
 class LockManager:
     def __init__(self):
         self.locklist = dict()
@@ -11,8 +13,10 @@ class LockManager:
             return
         if self.have_perm(tran_id, page_id, lock_type):
             return
+        self.enter_wait(tran_id, page_id)
         while True:
             if self.can_acquire(tran_id, page_id, lock_type):
+                self.quit_wait(tran_id)
                 self.grant_lock(tran_id, page_id, lock_type)
                 return
             else:
@@ -38,6 +42,12 @@ class LockManager:
             self.upgrade_lock(lock, lock_type)
         elif lock_type == 'S':
             lock.add_holder(tran_id)
+
+    def enter_wait(self, tran_id, page_id):
+        self.waitlist[tran_id] = page_id
+
+    def quit_wait(self, tran_id):
+        self.waitlist.pop(tran_id)
 
     def upgrade_lock(self, lock, lock_type):
         lock.set_type(lock_type)
@@ -89,7 +99,7 @@ class LockManager:
         return False
 
     def wait(self):
-        wait_time = 10
+        wait_time = 5
         time.sleep(wait_time)
 
     def have_lock(self, page_id):
@@ -118,6 +128,10 @@ class LockManager:
         lock = self.get_lock(page_id)
         if lock:
             return lock.get_type()
+
+    def clear(self):
+        self.locklist = dict()
+        self.waitlist = dict()
 
 
 class Lock:

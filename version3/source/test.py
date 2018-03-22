@@ -1,12 +1,9 @@
-class T:
-    def __init__(self):
-        self.value = 0
+from multiprocessing.dummy import Pool
+import threading
+import time
+import signal
+from multiprocessing import Process
 
-t1 = T()
-t2 = T()
-t3 = T()
-d = dict()
-d[t1] = t2
-t2.value = 3
-t2_ = d[t1]
-print(t2_.value)
+a = [(1, 2), (3, 4)]
+for x1, x2 in a:
+    print(x1, x2)
