@@ -8,9 +8,9 @@
 #
 # class TestInsert(unittest.TestCase):
 #     def setUp(self):
-#         self.catalog_file = '/home/latin/code/python/latin_database/version3/data/catalog'
-#         self.table_name1 = '/home/latin/code/python/latin_database/version3/data/test1'
-#         self.table_name2 = '/home/latin/code/python/latin_database/version3/data/test2'
+#         self.catalog_file = '/home/latin/code/latin/python/latin_database/version3/data/catalog'
+#         self.table_name1 = '/home/latin/code/latin/python/latin_database/version3/data/test1'
+#         self.table_name2 = '/home/latin/code/latin/python/latin_database/version3/data/test2'
 #         self.tables = [self.table_name1, self.table_name2]
 #         open(self.table_name1, 'w+').close()
 #         open(self.table_name2, 'w+').close()

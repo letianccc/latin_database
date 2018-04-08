@@ -6,6 +6,7 @@ from version3.source.type import IntType, StringType
 from version3.source.heappage import HeapPage, PageId
 from version3.source.insert import Insert
 from version3.source.database import Database
+from version3.source.lock import DeadlockException
 from threading import Thread
 import os
 
@@ -13,28 +14,52 @@ import os
 
 
 class TestUtil():
+
     @staticmethod
-    def gen_page_id1():
-        table_name = '/home/latin/code/python/latin_database/version3/data/test1'
+    def grab_lock(tran_id, page_id, lock_type):
+        args = (page_id, tran_id, type_)
+
+
+
+    @staticmethod
+    def gen_page_id1(page_index):
+        table_name = '/home/latin/code/latin/python/latin_database/version3/data/test1'
         table_id = Catalog.name_to_id(table_name)
-        page_index = 0
         page_id = PageId(table_id, page_index)
         return page_id
 
     @staticmethod
-    def gen_page_id2():
-        table_name = '/home/latin/code/python/latin_database/version3/data/test2'
+    def gen_page_id2(page_index):
+        table_name = '/home/latin/code/latin/python/latin_database/version3/data/test2'
         table_id = Catalog.name_to_id(table_name)
-        page_index = 0
         page_id = PageId(table_id, page_index)
         return page_id
 
+    @staticmethod
+    def get_page_id(table_name, page_index):
+        table_id = Catalog.name_to_id(table_name)
+        pid = PageId(table_id, page_index)
+        return pid
+
+    @staticmethod
+    def get_S_tran_args(tran_id, table_name, page_index):
+        lock_type = 'S'
+        pid = TestUtil.get_page_id(table_name, page_index)
+        args = (pid, tran_id, lock_type)
+        return args
+
+    @staticmethod
+    def get_X_tran_args(tran_id, table_name, page_index):
+        lock_type = 'X'
+        pid = TestUtil.get_page_id(table_name, page_index)
+        args = (pid, tran_id, lock_type)
+        return args
 
     @staticmethod
     def file_init():
-        table_name1 = '/home/latin/code/python/latin_database/version3/data/test1'
-        table_name2 = '/home/latin/code/python/latin_database/version3/data/test2'
-        catalog_file = '/home/latin/code/python/latin_database/version3/data/catalog'
+        table_name1 = '/home/latin/code/latin/python/latin_database/version3/data/test1'
+        table_name2 = '/home/latin/code/latin/python/latin_database/version3/data/test2'
+        catalog_file = '/home/latin/code/latin/python/latin_database/version3/data/catalog'
         open(table_name1, 'w+').close()
         open(table_name2, 'w+').close()
         open(catalog_file, 'w+').close()
@@ -42,8 +67,8 @@ class TestUtil():
 
     @staticmethod
     def create_catalog():
-        table_name1 = '/home/latin/code/python/latin_database/version3/data/test1'
-        table_name2 = '/home/latin/code/python/latin_database/version3/data/test2'
+        table_name1 = '/home/latin/code/latin/python/latin_database/version3/data/test1'
+        table_name2 = '/home/latin/code/latin/python/latin_database/version3/data/test2'
         td1 = TestUtil.gen_tuple_desc1()
         td2 = TestUtil.gen_tuple_desc1()
         Catalog.add_table(table_name1, td1)
@@ -53,7 +78,7 @@ class TestUtil():
     @staticmethod
     def init_data():
         page_num = 3
-        table_name1 = '/home/latin/code/python/latin_database/version3/data/test1'
+        table_name1 = '/home/latin/code/latin/python/latin_database/version3/data/test1'
         tuples_case = TestUtil.gen_tuples(table_name1, page_num)
         for t in tuples_case:
             operator = Insert(table_name1, t)
@@ -171,9 +196,9 @@ class TestUtil():
 
     @staticmethod
     def clear():
-        catalog_file = '/home/latin/code/python/latin_database/version3/data/catalog'
-        data_file1 = '/home/latin/code/python/latin_database/version3/data/test1'
-        data_file2 = '/home/latin/code/python/latin_database/version3/data/test2'
+        catalog_file = '/home/latin/code/latin/python/latin_database/version3/data/catalog'
+        data_file1 = '/home/latin/code/latin/python/latin_database/version3/data/test1'
+        data_file2 = '/home/latin/code/latin/python/latin_database/version3/data/test2'
         open(catalog_file, 'wb+').close()
         open(data_file1, 'wb+').close()
         open(data_file2, 'wb+').close()
@@ -196,28 +221,37 @@ class TestUtil():
             print(f.get_value(), end=' ')
         print()
 
-class TestLockUtil:
-    def __init__(self, tran_id, page_id, lock_type):
-        self.acquire = False
-        self.acquire_lock(tran_id, page_id, lock_type)
-
-
-    def acquire_lock(tran_id, page_id, lock_type):
-        buffer_ = Database.get_buffer()
-        buffer_.get_page(tran_id, page_id, lock_type)
-        lm = buffer_.get_lock_manager()
-        lock = lm.get_lock(page_id)
-        holders = lock.holders
-        if len(holders) == 1:
-            if holders[0] == tran_id:
-                if lock.get_type() == lock_type:
-                    self.acquire = True
-
-# class TestThread(Thread):
-#     def __init__(self, target, args):
-#         super(TestThread, self).__init__()
-#         self.target = target
-#         self.args = args
+# class TestLockUtil:
+#     def __init__(self, tran_id, page_id, lock_type):
+#         self.acquire = False
+#         self.acquire_lock(tran_id, page_id, lock_type)
 #
-#     def run(self):
-#         self.target(self.args)
+#
+#     def acquire_lock(tran_id, page_id, lock_type):
+#         buffer_ = Database.get_buffer()
+#         buffer_.get_page(tran_id, page_id, lock_type)
+#         lm = buffer_.get_lock_manager()
+#         lock = lm.get_lock(page_id)
+#         holders = lock.holders
+#         if len(holders) == 1:
+#             if holders[0] == tran_id:
+#                 if lock.get_type() == lock_type:
+#                     self.acquire = True
+
+class GrabLock(Thread):
+    def __init__(self, tran_id, page_id, lock_type):
+        Thread.__init__(self)
+        self.tran_id = tran_id
+        self.page_id = page_id
+        self.lock_type = lock_type
+        self.daemon = True
+        self.success = False
+        self.deadlock = False
+
+    def run(self):
+        buffer_ = Database.get_buffer()
+        try:
+            buffer_.get_page(self.page_id, self.tran_id, self.lock_type)
+            self.success = True
+        except DeadlockException:
+            self.deadlock = True

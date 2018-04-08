@@ -6,13 +6,13 @@
 #
 # class TestIO(unittest.TestCase):
 #     def test_read_none(self):
-#         table_name = '/home/latin/code/python/latin_database/version3/data/test1'
+#         table_name = '/home/latin/code/latin/python/latin_database/version3/data/test1'
 #         with open(table_name, 'wb+') as f:
 #             i = read_integer(f)
 #             assert(i == None)
 #
 #     def test_write_integer(self):
-#         table_name = '/home/latin/code/python/latin_database/version3/data/test1'
+#         table_name = '/home/latin/code/latin/python/latin_database/version3/data/test1'
 #         f = open(table_name, 'wb+')
 #
 #         test_integer = 1
@@ -25,7 +25,7 @@
 #         os.remove(table_name)
 #
 #     def test_write_string(self):
-#         table_name = '/home/latin/code/python/latin_database/version3/data/test1'
+#         table_name = '/home/latin/code/latin/python/latin_database/version3/data/test1'
 #         f = open(table_name, 'wb+')
 #
 #         test_string = 'aaa'
@@ -45,7 +45,7 @@
 #         type_ = IntType()
 #         fd_case = FieldDesc(name, type_)
 #
-#         table_name = '/home/latin/code/python/latin_database/version3/data/test1'
+#         table_name = '/home/latin/code/latin/python/latin_database/version3/data/test1'
 #         f = open(table_name, 'wb+')
 #         write_field_desc(f, fd_case)
 #         f.seek(0)

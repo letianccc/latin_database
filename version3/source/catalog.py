@@ -11,7 +11,7 @@ class Catalog:
     __id_to_tuple_desc = dict()
     __name_to_file = dict()
     # __name_to_id = dict()
-    file_name = '/home/latin/code/python/latin_database/version3/data/catalog'
+    file_name = '/home/latin/code/latin/python/latin_database/version3/data/catalog'
 
 
     table_id = 0
@@ -140,7 +140,7 @@ class Catalog:
 
     @classmethod
     def get_tuple_desc(cls, target_table_name):
-        catalog_file = '/home/latin/code/python/latin_database/version3/data/catalog'
+        catalog_file = '/home/latin/code/latin/python/latin_database/version3/data/catalog'
         with open(catalog_file, 'rb') as f:
             table_num_ = read_table_num(f)
             for i in range(table_num_):
